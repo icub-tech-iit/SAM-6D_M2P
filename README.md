@@ -1,3 +1,6 @@
+We added some fixes to allow the pose estimation to run at mixed precision (torch.cuda.amp.autocast). Unfortunately, the use of Pointnet2 as external component makes it hard to compile the model via Torch or TensorRT. 
+**Note**: we have the correct environment defined in another repo, the standard SAM6D demo is not tested. Check: https://github.com/savidini/SAM-6D 
+
 # <p align="center"> <font color=#008000>SAM-6D</font>: Segment Anything Model Meets Zero-Shot 6D Object Pose Estimation </p>
 
 ####  <p align="center"> [Jiehong Lin](https://jiehonglin.github.io/), [Lihua Liu](https://github.com/foollh), [Dekun Lu](https://github.com/WuTanKun), [Kui Jia](http://kuijia.site/)</p>

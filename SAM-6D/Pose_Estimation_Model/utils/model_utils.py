@@ -340,10 +340,11 @@ def weighted_procrustes(
     ref_points_centered = ref_points - ref_centroid  # (B, N, 3)
 
     H = src_points_centered.permute(0, 2, 1) @ (weights * ref_points_centered)
-    U, _, V = torch.svd(H)
+    U, _, V = torch.svd(H.float())  # (B, 3, 3)
+    U, V = U.to(H.dtype), V.to(H.dtype) 
     Ut, V = U.transpose(1, 2), V
     eye = torch.eye(3).unsqueeze(0).repeat(batch_size, 1, 1).to(src_points.device)
-    eye[:, -1, -1] = torch.sign(torch.det(V @ Ut))
+    eye[:, -1, -1] = torch.sign(torch.linalg.det((V @ Ut).float())).to(V.dtype)
     R = V @ eye @ Ut
 
     t = ref_centroid.permute(0, 2, 1) - R @ src_centroid.permute(0, 2, 1)

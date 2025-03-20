@@ -582,6 +582,9 @@ class LinearAttentionLayer(nn.Module):
             memory_states,
             memory_states,
         )
+        # This is to prevent nans in the linear layer. That would lead to many estimates with 0 confidence.
+        hidden_states = torch.clamp(hidden_states, min=-1e4, max=1e4)
+
         hidden_states = self.linear(hidden_states)
         hidden_states = self.dropout(hidden_states)
         output_states = self.norm(hidden_states + input_states)

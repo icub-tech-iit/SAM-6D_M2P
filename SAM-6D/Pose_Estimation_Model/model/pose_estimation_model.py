@@ -27,7 +27,7 @@ class Net(nn.Module):
         bg_point = torch.ones(dense_pm.size(0),1,3).float().to(dense_pm.device) * 100
 
         sparse_pm, sparse_fm, fps_idx_m = sample_pts_feats(
-            dense_pm, dense_fm, self.coarse_npoint, return_index=True
+            dense_pm, dense_fm.float(), self.coarse_npoint, return_index=True
         )
         geo_embedding_m = self.geo_embedding(torch.cat([bg_point, sparse_pm], dim=1))
 

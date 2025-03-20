@@ -43,10 +43,9 @@ class FinePointMatching(nn.Module):
         init_t = end_points['init_t']
         p1_ = (p1 - init_t.unsqueeze(1)) @ init_R
 
-        f1 = self.in_proj(f1) + self.PE(p1_)
+        f1 = self.in_proj(f1) + self.PE(p1_.float()) 
         f1 = torch.cat([self.bg_token.repeat(B,1,1), f1], dim=1) # adding bg
-
-        f2 = self.in_proj(f2) + self.PE(p2)
+        f2 = self.in_proj(f2) + self.PE(p2.float())
         f2 = torch.cat([self.bg_token.repeat(B,1,1), f2], dim=1) # adding bg
 
         atten_list = []
