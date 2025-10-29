@@ -83,7 +83,6 @@ class ViT_AE(nn.Module):
                 model_zoo.load_url('https://dl.fbaipublicfiles.com/mae/pretrain/mae_pretrain_'+ self.vit_type +'.pth', 'checkpoints')
 
             checkpoint = torch.load(vit_checkpoint, map_location='cpu', weights_only=True)
-            print("load pre-trained checkpoint from: %s" % vit_checkpoint)
             checkpoint_model = checkpoint['model']
             state_dict = self.vit.state_dict()
             for k in ['head.weight', 'head.bias']:
@@ -179,6 +178,7 @@ class ViTEncoder(nn.Module):
         tem_feat = torch.cat(tem_feat_list, dim=1)
 
         return sample_pts_feats(tem_pts, tem_feat, npoint)
+
 
 
 
