@@ -13,6 +13,19 @@ _ext_sources = glob.glob("{}/src/*.cpp".format(_ext_src_root)) + glob.glob(
 )
 _ext_headers = glob.glob("{}/include/*".format(_ext_src_root))
 
+try:
+    import torch
+    import re
+    current_list = os.environ.get("TORCH_CUDA_ARCH_LIST", "")
+    current_cc = torch.cuda.get_device_capability(0)  # (major, minor)
+    if torch.cuda.is_available() is False:
+        raise RuntimeError("CUDA is not available")
+    
+    os.environ["TORCH_CUDA_ARCH_LIST"] = f"{current_cc[0]}.{current_cc[1]}"        
+        
+except Exception:
+    pass  # fall back to whatever the environment provides
+
 setup(
     name='pointnet2',
     packages = find_packages(),
@@ -22,8 +35,6 @@ setup(
             sources=_ext_sources,
             include_dirs = [os.path.join(_ext_src_root, "include")],
             extra_compile_args={
-                # "cxx": ["-O2", "-I{}".format("{}/include".format(_ext_src_root))],
-                # "nvcc": ["-O2", "-I{}".format("{}/include".format(_ext_src_root))],
                 "cxx": [],
                 "nvcc": ["-O3", 
                 "-DCUDA_HAS_FP16=1",
@@ -32,5 +43,5 @@ setup(
                 "-D__CUDA_NO_HALF2_OPERATORS__",
             ]},)
     ],
-    cmdclass={'build_ext': BuildExtension.with_options(use_ninja=True)}
+    cmdclass={'build_ext': BuildExtension.with_options(use_ninja=False)}
 )
